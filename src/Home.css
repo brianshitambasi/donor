@@ -1,0 +1,35 @@
+/* Home Page Styling */
+.home {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f8f9fa;
+  }
+  
+  .hero-section {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+    color: white;
+    height: 60vh;
+    padding: 3rem 1rem;
+    margin-bottom: 3rem;
+    border-radius: 0 0 50px 50px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .info-card i {
+    transition: transform 0.3s ease;
+  }
+  
+  .info-card:hover i {
+    transform: scale(1.2);
+  }
+  
+  .info-card h3 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  
