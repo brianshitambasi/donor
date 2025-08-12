@@ -1,59 +1,95 @@
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.min.js'
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Components
 import HomeComponent from './components/HomeComponent';
-import NavbarComponent from './components/NavbarComponent';
+import AboutComponent from './components/AboutComponent';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './context/ProtectedRoutes';
+import AdminDashboard from './components/admin/AdminDashboard';
+import Donors from './components/admin/Donar'; 
+import Volunteers from './components/admin/Volunteers';
+import VolunteerEdit from './components/admin/forms/VolunteerEdit';
+import VolunteerAdd from './components/admin/forms/VolunteerAdd';
+import RegisterComponent from './components/RegisterComponent';
+import LoginComponent from './components/LoginComponent';
+import NotAuthorized from './components/NotAuthorized';
+import NotFound from './components/NotFound';
+import DonorAdd from './components/admin/forms/DonorAdd';
+import DonorEdit from './components/admin/forms/DonorEdit';
+import DonorDashboard from './components/donor/DonorDashboard';
+import DonorLayout from './components/donor/DonorLayout';
+import VolunteerDashboard from './components/volunteer/VolunteerDashboard';
+import AdminLayout from './components/admin/AdminLayout';
+
 function App() {
   return (
     <Router>
+       {/* we wrap all routes inside the authprovider */}
       <AuthProvider>
-      <div className="App">
         <Routes>
+
+          {/* Public Routes */}
           <Route path="/" element={<HomeComponent />} />
-          {/* admin protected routes */}
-          <Route path="/admin" element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <div>Admin Dashboard</div>
-            </ProtectedRoute>
-          } />
-
-          {/* donor protected routes */}
-          <Route path="/donor" element={
-            <ProtectedRoute allowedRoles={['donor']}>
-              <div>Donor Dashboard</div>
-            </ProtectedRoute>
-          } />
-
-          {/* user protected routes */}
-          <Route path="/user" element={
-            <ProtectedRoute allowedRoles={['user']}>
-              <div>User Dashboard</div>
-            </ProtectedRoute>
-          } />
-
-
-
-          <Route path="/login" element={<div>Not Authorized</div>} />  
-          <Route path="/register" element={<div>Not Authorized</div>} />
-          {/* not authorized route */}
-          <Route path="/not-authorized" element={<div>Not Authorized</div>} />
-
           
-          {/* 404 route */}
-          <Route path="*" element={<div>404 Not Found</div>} /> 
+          {/* Admin Protected Routes */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            {/* Donors */}
+            <Route path="donors" element={<Donors />} />
+            <Route path="donor/add" element={<DonorAdd />} />
+            <Route path="donor/edit/:id" element={<DonorEdit />} />
+            {/* Volunteers */}
+            <Route path="volunteers" element={<Volunteers />} />
+            <Route path="volunteer/add" element={<VolunteerAdd />} />
+            <Route path="volunteer/edit" element={<VolunteerEdit />} />
+          </Route>
 
+          {/* Donor Protected Routes */}
+          <Route
+            path="/donor-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['donor']}>
+                <DonorLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<DonorDashboard />} />
+          </Route>
+
+          {/* Volunteer Protected Routes */}
+          <Route
+            path="/volunteer-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['volunteer']}>
+                <VolunteerDashboard />
+              </ProtectedRoute>
+            }
+          />    
+          <Route path="/about" element={<AboutComponent />} />
+          <Route path="/login" element={<LoginComponent />} />
+          <Route path="/register" element={<RegisterComponent />} />
+          <Route path="/not-authorized" element={<NotAuthorized />} />
+          <Route path="/not-found" element={<NotFound />} />
+
+
+          {/* Catch-all for undefined routes */}
+          <Route path="*" element={<NotFound />} />
           
         </Routes>
-
-        {/* Footer can be added here if needed */}
-
-      </div>
       </AuthProvider>
     </Router>
   );
 }
+
 export default App;

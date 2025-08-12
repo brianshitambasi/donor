@@ -36,3 +36,33 @@
     transform: rotate(360deg);
   }
 }
+
+.about-hero {
+  background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+}
+
+.team-card {
+  transition: transform 0.3s ease;
+  border-radius: 10px;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.value-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.value-card {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+}
+
+.value-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  background: white;
+}

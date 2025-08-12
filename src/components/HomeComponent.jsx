@@ -8,7 +8,7 @@ const HomeComponent = () => {
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div className="container">
-          <Link className="navbar-brand fw-bold" to="/">Burnix Donations</Link>
+          <Link className="navbar-brand fw-bold" to="/">Charity Excellence Framework</Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -38,6 +38,29 @@ const HomeComponent = () => {
         </div>
       </nav>
 
+      {/* Carousel to display images of charity work */}
+      <div id="charityCarousel" className="carousel slide" data-bs-ride="carousel">
+        <div className="carousel-inner">
+          <div className="carousel-item active">
+            <img src="static/images/a1.jpeg" className="d-block w-100" alt="Charity Work" height={250} width={250} />
+          </div>
+          <div className="carousel-item">
+            <img src="static/images/a2.jpeg" className="d-block w-100" alt="Helping Community" height={250} width={250} />
+          </div>
+          <div className="carousel-item">
+            <img src="static/images/a3.jpeg" className="d-block w-100" alt="Volunteering Aid" height={250} width={250}/>
+          </div>
+        </div>
+        <button className="carousel-control-prev" type="button" data-bs-target="#charityCarousel" data-bs-slide="prev">
+          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span className="visually-hidden">Previous</span>
+        </button>
+        <button className="carousel-control-next" type="button" data-bs-target="#charityCarousel" data-bs-slide="next">
+          <span className="carousel-control-next-icon" aria-hidden="true"></span>
+          <span className="visually-hidden">Next</span>
+        </button>
+      </div>
+
       {/* Hero Section */}
       <section className="hero-section text-center d-flex flex-column justify-content-center align-items-center">
         <div className="container">
@@ -46,7 +69,7 @@ const HomeComponent = () => {
             Your generous donation helps transform lives and communities.
             Join us in creating lasting impact by supporting causes that matter.
           </p>
-          <Link to="/donate" className="btn btn-lg btn-success px-5 py-3">
+          <Link to="/donate" className="btn btn-lg btn-danger px-5 py-3">
             Donate Now
           </Link>
         </div>
@@ -88,13 +111,19 @@ const HomeComponent = () => {
       {/* Footer */}
       <footer className="bg-dark text-white text-center py-4">
         <div className="container">
+          We are dedicated to making the world a better place through kindness, generosity, and community support.
+          Every donation goes directly to causes that matter most to you, whether it's providing food for the hungry, shelter for the homeless, or education for children in need.
+          <p className="text-center mt-4">
+            Join us in our mission to create a brighter future for all. Together, we can make a difference that lasts a lifetime.
+            <br />
+          </p>
           <p>© 2025 Burnix Donations. All rights reserved.</p>
           <p>
             <Link to="/privacy" className="text-white me-3">Privacy Policy</Link>
             <Link to="/terms" className="text-white">Terms of Service</Link>
           </p>
         </div>
-      </footer>
+      </footer> 
     </div>
   )
 }
