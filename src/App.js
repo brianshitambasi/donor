@@ -10,7 +10,6 @@ import AboutComponent from './components/AboutComponent';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './context/ProtectedRoutes';
 import AdminDashboard from './components/admin/AdminDashboard';
-import Donors from './components/admin/Donar'; 
 import Volunteers from './components/admin/Volunteers';
 import VolunteerEdit from './components/admin/forms/VolunteerEdit';
 import VolunteerAdd from './components/admin/forms/VolunteerAdd';
@@ -24,6 +23,10 @@ import DonorDashboard from './components/donor/DonorDashboard';
 import DonorLayout from './components/donor/DonorLayout';
 import VolunteerDashboard from './components/volunteer/VolunteerDashboard';
 import AdminLayout from './components/admin/AdminLayout';
+import Donor from './components/admin/Donor';
+import Request from './components/admin/Request';
+import RequestProduct from './components/admin/Request';
+import Settings from './components/Settings';
 
 function App() {
   return (
@@ -46,13 +49,20 @@ function App() {
           >
             <Route index element={<AdminDashboard />} />
             {/* Donors */}
-            <Route path="donors" element={<Donors />} />
+            <Route path="donors" element={<Donor />} />
             <Route path="donor/add" element={<DonorAdd />} />
             <Route path="donor/edit/:id" element={<DonorEdit />} />
             {/* Volunteers */}
             <Route path="volunteers" element={<Volunteers />} />
             <Route path="volunteer/add" element={<VolunteerAdd />} />
             <Route path="volunteer/edit" element={<VolunteerEdit />} />
+            {/* request */}
+            <Route path="request" element={<RequestProduct />} />
+
+            {/* Settings */}
+            <Route path="settings" element={<Settings />} />
+
+
           </Route>
 
           {/* Donor Protected Routes */}

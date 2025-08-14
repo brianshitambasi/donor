@@ -72,7 +72,7 @@ const Volunteers = () => {
 
                     <button 
                         className='btn btn-info text-white'  
-                        onClick={() => navigate('/admin-dashboard/volunteers/add')}
+                        onClick={() => navigate('/admin-dashboard/volunteer/add')}
                     >
                         <i className='bi bi-plus-circle'></i> Add Volunteer
                     </button>

@@ -1,7 +1,9 @@
 import React from 'react'
-import SideBar from './SideBar'
+
+
 import { Outlet } from 'react-router-dom'
 import DashboardNavbar from '../DashboardNavbar'
+import SideBar from './Sidebar'
 
 
 
