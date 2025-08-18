@@ -18,7 +18,7 @@ const Volunteers = () => {
     const fetchVolunteers = async () => {
         try {
             toast.info("Loading volunteers...")
-            const res = await axios.get('https://schoolapi-92n6.onrender.com/api/volunteer', authHeader)
+            const res = await axios.get('https://burnix-website.onrender.com/api/donors/volunteer', authHeader)
             setVolunteers(res.data)
             toast.dismiss()
         } catch (error) {
@@ -35,7 +35,7 @@ const Volunteers = () => {
         if (window.confirm('Are you sure you want to delete this volunteer?')) {
             try {
                 toast.warning('Deleting volunteer...')
-                const res = await axios.delete(`https://schoolapi-92n6.onrender.com/api/volunteer/${id}`, authHeader)
+                const res = await axios.delete(`https://burnix-website.onrender.com/api/volunteer/${id}`, authHeader)
                 toast.info(res.data.message)
                 fetchVolunteers()
             } catch (error) {

@@ -168,7 +168,7 @@ const VolunteerDonationForm = () => {
                     file:text-sm file:font-semibold
                     file:bg-blue-50 file:text-blue-700
                     hover:file:bg-blue-100
-                    focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    focus:outline-none focus:ring-2 focus:ring-blue-500" width={50} height={50}
                 />
               </div>
               {formData.imagePreview && (

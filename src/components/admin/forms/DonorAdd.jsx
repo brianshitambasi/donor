@@ -163,11 +163,11 @@ const DonorAdd = () => {
               <input 
                 type="number" 
                 className='form-control' 
-                placeholder='Amount (if monetary)' 
+                placeholder='Amount (if applicable)' 
                 name="amount"
                 value={formData.amount}
                 onChange={handleChange}
-                step="0.01"
+                step="1"
               />
             </div>
 

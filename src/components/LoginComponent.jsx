@@ -18,7 +18,7 @@ const LoginComponent = () => {
     setLoading("Loggin in ...")
     try {
       const data={email,password}
-      const res=await axios.post("https://schoolapi-92n6.onrender.com/api/user/Auth/",data)
+      const res=await axios.post("https://burnix-website.onrender.com/api/donors/",data)
       
       const{token,user}=res.data
       setToken(token)

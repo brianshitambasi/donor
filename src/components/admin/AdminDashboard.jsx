@@ -22,7 +22,8 @@ const AdminDashboard = () => {
   const fetchStats = async () => {
     try {
       const res = await axios.get(
-        'https://schoolapi-92n6.onrender.com/api/admindash/',
+        'https://burnix-website.onrender.com/api/donors', 
+
         authHeader
       );
       // Ensure all fields exist and have defaults

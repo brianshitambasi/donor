@@ -26,7 +26,6 @@ import AdminLayout from './components/admin/AdminLayout';
 import Donor from './components/admin/Donor';
 import Request from './components/admin/Request';
 import RequestProduct from './components/admin/Request';
-import Settings from './components/Settings';
 
 function App() {
   return (
@@ -59,8 +58,7 @@ function App() {
             {/* request */}
             <Route path="request" element={<RequestProduct />} />
 
-            {/* Settings */}
-            <Route path="settings" element={<Settings />} />
+            
 
 
           </Route>

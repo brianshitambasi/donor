@@ -23,7 +23,7 @@ const RegisterComponent = () => {
         setLoading("Registering Admin Account.. ")
         try {
             const data={name,email,password,secretKey}
-            const res= await axios.post("https://schoolapi-92n6.onrender.com/api/user/Auth/register",data)
+            const res= await axios.post("https://burnix-website.onrender.com/api/donors/register",data)
             // console.log("registration ", res.data)
             if(res.data.newUser){
                 setLoading("")

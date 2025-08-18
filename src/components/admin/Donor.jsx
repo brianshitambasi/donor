@@ -119,7 +119,7 @@ const Donors = () => {
                                     <td>
 
                                      {Donor.photo ? (
-                                      <img src={`https://schoolapi-92n6.onrender.com/${Donor.photo}`} 
+                                      <img src={`https://burnix-website.onrender.com/api/donors/photo/${Donor._id}?${new Date().getTime()}`} 
                                        alt="Donor"
                                        width={80}
                                         height={80}

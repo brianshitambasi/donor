@@ -73,7 +73,8 @@ const RequestProduct = () => {
     
     try {
       // Replace with your actual API endpoint
-      const response = await axios.post('/api/requests', formData);
+      const response = await axios.post('https://burnix-website.onrender.com/api/donors', 
+         formData);
       if (response.status === 201) {
         setSubmitSuccess(true);
         setTimeout(() => {

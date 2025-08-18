@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { NavLink } from 'react-router-dom'
-import Settings from './Settings'
 
 
 
@@ -24,20 +23,7 @@ const DashboardNavbar = () => {
                 <button className='btn btn-sm btn-outline-danger d-flex align-items-center' onClick={logout}>
                     <i className='bi bi-box-arrow-right'></i>Logout
                 </button>
-                {/* settings */}
-              <button className='btn btn-sm btn-outline-success d-flex align-items-center ms-2' onClick={Settings}>  
-                <i className='bi bi-gear'></i>Settings
-              <li>
-            <NavLink 
-
-                    to='/admin-dashboard/settings' 
-                    end 
-                    className={({isActive})=> isActive? 'nav-link bg-success text-light fw-bold':'nav-link text-light'}>
-
-            
-                </NavLink>
-            </li>
-                </button> 
+                
            
 
 
