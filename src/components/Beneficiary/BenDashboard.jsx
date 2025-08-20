@@ -1,255 +1,146 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  TextField,
-  Button,
-  Chip,
-  CircularProgress,
-  Avatar,
-  Badge,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl
-} from '@mui/material';
-import {
-  Search,
-  FilterList,
-  FavoriteBorder,
-  ShoppingBasket,
-  LocationOn,
-  Person,
-  CheckCircle
-} from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-import { teal, orange, deepPurple, green } from '@mui/material/colors';
-
-const ColorButton = styled(Button)(({ theme }) => ({
-  backgroundColor: teal[500],
-  '&:hover': {
-    backgroundColor: teal[700],
-  },
-}));
+import NavBar from '../NavBar';
 
 const BenDashboard = () => {
-  const [donations, setDonations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
-  const [error, setError] = useState(null);
+  const [donations, setDonations] 
+  = useState([]);
 
-  useEffect(() => {
-    const fetchDonations = async () => {
-      try {
-        const response = await axios.get('/api/donations');
-        setDonations(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch donations');
-        setLoading(false);
-        console.error('Error fetching donations:', err);
-      }
-    };
+  const [loading, setLoading] = useState('Loading your donations...');
+  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [request, setRequest] = useState({
+    item: '',
+    quantity: '',
+    notes: ''
+  });
+  const [requestMessage, setRequestMessage] = useState('');
 
-    fetchDonations();
-  }, []);
 
-  const handleRequestDonation = async (donationId) => {
+  const fetchDonations = async () => {
     try {
-      await axios.post('/api/requests', {
-        donation: donationId,
-        beneficiary: localStorage.getItem('userId'), // Assuming you store user ID
-        status: 'pending'
+      const token = localStorage.getItem('token');
+      const res = await axios.get('https://burnix-website.onrender.com/api/donations/assigned-to-me', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
-      alert('Request submitted successfully!');
+      setDonations(res.data);
+      setLoading('');
     } catch (err) {
-      console.error('Error requesting donation:', err);
-      alert('Failed to submit request');
+      console.error(err);
+      setLoading('');
     }
   };
 
-  const filteredDonations = donations.filter(donation => {
-    const matchesSearch = donation.type.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         donation.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterType === 'all' || donation.type === filterType;
-    return matchesSearch && matchesFilter && donation.status === 'available';
-  });
+  useEffect(() => {
+    fetchDonations();
+  }, []);
 
-  const donationTypes = [...new Set(donations.map(d => d.type))];
+  const handleRequestChange = (e) => {
+    const { name, value } = e.target;
+    setRequest((prev) => ({ ...prev, [name]: value }));
+  };
 
-  if (loading) return (
-    <Container sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-      <CircularProgress />
-    </Container>
-  );
+  const handleRequestSubmit = async (e) => {
+    e.preventDefault();
+    setRequestMessage('Sending request...');
 
-  if (error) return (
-    <Container sx={{ textAlign: 'center', mt: 4 }}>
-      <Typography color="error">{error}</Typography>
-    </Container>
-  );
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('https://burnix-website.onrender.com/api/beneficiary-requests', request, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setRequestMessage('Request submitted successfully!');
+      setRequest({ item: '', quantity: '', notes: '' });
+    } catch (err) {
+      console.error(err);
+      setRequestMessage('Failed to submit request.');
+    }
+  };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ 
-        fontWeight: 'bold', 
-        color: teal[700],
-        mb: 4,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1
-      }}>
-        <ShoppingBasket fontSize="large" /> Available Donations
-      </Typography>
+    <div
+      className="min-vh-100 py-5"
+      style={{
+        background: 'linear-gradient(to right, #e6f0ff, #ffffff)',
+        paddingBottom: '3rem',
+      }}
+    >
+      <div className="container">
+        <h2 className='text-center mb-4 text-primary fw-bold'>Beneficiary Dashboard</h2>
 
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            placeholder="Search donations..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: <Search sx={{ mr: 1, color: 'action.active' }} />,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControl fullWidth>
-            <InputLabel>Filter by Type</InputLabel>
-            <Select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              label="Filter by Type"
-              startAdornment={<FilterList sx={{ mr: 1, color: 'action.active' }} />}
-            >
-              <MenuItem value="all">All Types</MenuItem>
-              {donationTypes.map(type => (
-                <MenuItem key={type} value={type}>{type}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-      </Grid>
+        {loading && <div className='alert alert-info'>{loading}</div>}
 
-      {filteredDonations.length === 0 ? (
-        <Typography variant="h6" textAlign="center" sx={{ mt: 4 }}>
-          No available donations matching your criteria
-        </Typography>
-      ) : (
-        <Grid container spacing={4}>
-          {filteredDonations.map((donation) => (
-            <Grid item key={donation._id} xs={12} sm={6} md={4}>
-              <Card sx={{ 
-                height: '100%', 
-                display: 'flex', 
-                flexDirection: 'column',
-                transition: 'transform 0.3s',
-                '&:hover': {
-                  transform: 'translateY(-5px)',
-                  boxShadow: 3
-                }
-              }}>
-                <Badge
-                  overlap="rectangular"
-                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                  badgeContent={
-                    <Chip 
-                      label={donation.status} 
-                      size="small" 
-                      sx={{ 
-                        backgroundColor: donation.status === 'available' ? green[500] : orange[500],
-                        color: 'white',
-                        fontWeight: 'bold'
-                      }} 
-                    />
-                  }
-                >
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={donation.image || 'https://source.unsplash.com/random/300x200/?donation'}
-                    alt={donation.type}
-                  />
-                </Badge>
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {donation.type}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {donation.description}
-                  </Typography>
-                  <Grid container spacing={1} sx={{ mb: 2 }}>
-                    <Grid item xs={6}>
-                      <Chip 
-                        icon={<Person />} 
-                        label={`Qty: ${donation.quantity}`} 
-                        variant="outlined"
-                        sx={{ color: deepPurple[500] }}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Chip 
-                        icon={<LocationOn />} 
-                        label={donation.donor?.address || 'N/A'} 
-                        variant="outlined"
-                        sx={{ color: teal[500] }}
-                      />
-                    </Grid>
-                  </Grid>
-                  <Typography variant="caption" display="block" sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center',
-                    color: orange[700],
-                    mb: 2
-                  }}>
-                    <CheckCircle fontSize="small" sx={{ mr: 0.5 }} /> 
-                    Posted {new Date(donation.createdAt).toLocaleDateString()}
-                  </Typography>
-                </CardContent>
-                <CardContent sx={{ pt: 0 }}>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item>
-                      <Avatar 
-                        src={donation.donor?.image} 
-                        sx={{ bgcolor: teal[100], color: teal[600] }}
-                      >
-                        {donation.donor?.name?.charAt(0) || 'D'}
-                      </Avatar>
-                    </Grid>
-                    <Grid item xs>
-                      <Typography variant="subtitle2">
-                        {donation.donor?.name || 'Anonymous Donor'}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {donation.donor?.email || ''}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <ColorButton
-                        variant="contained"
-                        size="small"
-                        startIcon={<FavoriteBorder />}
-                        onClick={() => handleRequestDonation(donation._id)}
-                      >
-                        Request
-                      </ColorButton>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
+        <div className='text-center mb-4'>
+          <button className='btn btn-outline-primary' onClick={() => setShowRequestForm(!showRequestForm)}>
+            {showRequestForm ? 'Hide Request Form' : 'Request New Item'}
+          </button>
+        </div>
+
+        {showRequestForm && (
+          <div className='card p-4 mb-4 shadow-sm'>
+            <h4 className='mb-3'>Request an Item</h4>
+            <form onSubmit={handleRequestSubmit}>
+              <div className='mb-3'>
+                <label>Item Name</label>
+                <input
+                  type='text'
+                  className='form-control'
+                  name='item'
+                  value={request.item}
+                  onChange={handleRequestChange}
+                  required
+                />
+              </div>
+              <div className='mb-3'>
+                <label>Quantity</label>
+                <input
+                  type='number'
+                  className='form-control'
+                  name='quantity'
+                  value={request.quantity}
+                  onChange={handleRequestChange}
+                  required
+                />
+              </div>
+              <div className='mb-3'>
+                <label>Additional Notes</label>
+                <textarea
+                  className='form-control'
+                  name='notes'
+                  value={request.notes}
+                  onChange={handleRequestChange}
+                  rows='3'
+                />
+              </div>
+              <button type='submit' className='btn btn-success'>Submit Request</button>
+              {requestMessage && <div className='mt-3 alert alert-info'>{requestMessage}</div>}
+            </form>
+          </div>
+        )}
+
+        {/* Assigned Donations */}
+        <div className='row'>
+          {donations.map((donation) => (
+            <div className='col-md-6 mb-4' key={donation._id}>
+              <div className='card shadow-sm border-left-primary'>
+                <div className='card-body'>
+                  <h5 className='card-title text-primary'>Donation: {donation.type}</h5>
+                  <p><strong>Quantity:</strong> {donation.quantity}</p>
+                  {donation.description && <p><strong>Description:</strong> {donation.description}</p>}
+                  <p><strong>Status:</strong> 
+                    <span className={`badge ms-2 bg-${donation.status === 'delivered' ? 'success' : donation.status === 'reserved' ? 'warning' : 'secondary'}`}>
+                      {donation.status.toUpperCase()}
+                    </span>
+                  </p>
+                  <small className='text-muted'>Assigned on: {new Date(donation.updatedAt).toLocaleDateString()}</small>
+                </div>
+              </div>
+            </div>
           ))}
-        </Grid>
-      )}
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 };
 
