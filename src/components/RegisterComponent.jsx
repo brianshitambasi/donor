@@ -8,7 +8,8 @@ const RegisterComponent = () => {
     const [name, setName]=useState('')
     const [email,setEmail]=useState('')
     const [password,setPassword]=useState('')
-    const [secretKey,setSecreatKey]= useState('')
+    const [address,setAddress]=useState('')
+    const [role,setRole]=useState('')
 
     // user interaction
     const [error, setError]=useState('')
@@ -20,11 +21,12 @@ const RegisterComponent = () => {
     const handleSubmit=async (e)=>{
         e.preventDefault()
         setError("")
-        setLoading("Registering Admin Account.. ")
+        setLoading("Registering  Account.. ")
         try {
-            const data={name,email,password,secretKey}
-            const res= await axios.post("https://burnix-website.onrender.com/api/donors/register",data)
-            // console.log("registration ", res.data)
+            const data={name,email,password, address, role}
+            const res= await axios.post("https://burnix-website.onrender.com/user/Auth/register",data)
+            console.log("Error Response:", error?.response);
+
             if(res.data.newUser){
                 setLoading("")
                 setSuccess(res.data.message)
@@ -58,8 +60,20 @@ const RegisterComponent = () => {
             {email}
             <input type="password" className='form-control  mb-3' placeholder='Password' value={password} onChange={(e)=>setPassword(e.target.value)} required/>
             {password}
-            <input type="password" className='form-control mb-3' placeholder='Secret Key' value={secretKey} onChange={(e)=>setSecreatKey(e.target.value)} required/>
-            {secretKey}
+            <input type="text" className='form-control  mb-3' placeholder='address' value={address} onChange={(e)=>setAddress(e.target.value)} required/>
+            {address}
+            {/* Role Dropdown */}
+            <select
+                    className="form-control mb-3"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    required
+                >
+                    <option value="donor">Donor</option>
+                    <option value="volunteer">Volunteer</option>
+                    <option value="beneficiary">Beneficiary</option>
+                </select>
+          
             <div className="d-grid mb-3">
                 <button type='submit' className='btn btn-success'>Register</button>
             </div>

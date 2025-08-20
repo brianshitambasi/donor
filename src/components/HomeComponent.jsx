@@ -1,54 +1,18 @@
 import React from 'react'
 import '../Home.css'
 import { Link } from 'react-router-dom'
+import NavBar from './NavBar'
 
 const HomeComponent = () => {
   return (
     <div className="home">
-      {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div className="container">
-          <Link className="navbar-brand fw-bold" to="/">Charity Excellence Framework</Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/">Home</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/about">About</Link>
-              
-
-              </li>
-              <li className='nav-item'>
-              <Link className="nav-link" to="/login">Login</Link>
-
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link btn btn-primary text-white ms-3 px-3 py-1 rounded" to="/login">
-                  Donate Now
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <NavBar />
 
       {/* Carousel to display images of charity work */}
       <div id="charityCarousel" className="carousel slide" data-bs-ride="carousel">
         <div className="carousel-inner">
           <div className="carousel-item active">
-            <img src="static/images/a1.jpeg" className="d-block w-100" alt="Charity Work" height={250} width={250} />
+            <img src="static/images/charity.jpg" className="d-block w-100" alt="Charity Work" height={350} width={250} />
           </div>
           <div className="carousel-item">
             <img src="static/images/a2.jpeg" className="d-block w-100" alt="Helping Community" height={250} width={250} />

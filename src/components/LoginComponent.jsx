@@ -18,7 +18,7 @@ const LoginComponent = () => {
     setLoading("Loggin in ...")
     try {
       const data={email,password}
-      const res=await axios.post("https://burnix-website.onrender.com/api/donors/",data)
+      const res=await axios.post("https://burnix-website.onrender.com/user/Auth/login",data)
       
       const{token,user}=res.data
       setToken(token)
@@ -27,11 +27,12 @@ const LoginComponent = () => {
       localStorage.setItem('token',token)
       localStorage.setItem('user',JSON.stringify(user))
       setLoading("")
+      console.log(res.data.user)
 
       // console.log(res.data)
       if (res.data.user) {
-        if (res.data.user.role==='admin') {
-            navigate('/admin-dashboard')
+        if (res.data.user.role==='beneficiary') {
+            navigate('/beneficiary-dashboard')
         }else if(res.data.user.role==='donor'){
           navigate('/donor-dashboard')
         }else if(res.data.user.role==='volunteer'){

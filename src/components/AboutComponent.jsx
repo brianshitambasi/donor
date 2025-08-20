@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import NavBar from './NavBar';
 // import '../About.css'; // This file must now exist in src/
 
 const AboutComponent = () => {
   return (
     <div className="about-page">
+         <NavBar />
       {/* Hero Section */}
       <section className="about-hero bg-primary text-white py-5">
         <div className="container py-5">
