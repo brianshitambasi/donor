@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -14,24 +14,26 @@ const BenRequest = () => {
   };
 
   // Fetch all donations
-  const fetchDonations = async () => {
+  const fetchDonations = useCallback(async () => {
     try {
       toast.info("Loading available donations...");
       const res = await axios.get(
-        "https://burnix-website.onrender.com/donation",
+        "https://burnix-website.onrender.com/api/donation", // ✅ corrected endpoint
         authHeader
       );
       setDonations(res.data);
       toast.dismiss();
     } catch (error) {
       toast.dismiss();
-      toast.error(error.response?.data?.message || "Failed to load donations");
+      toast.error(
+        error.response?.data?.message || "Failed to load donations"
+      );
     }
-  };
+  }, [authHeader]);
 
   useEffect(() => {
     fetchDonations();
-  }, []);
+  }, [fetchDonations]);
 
   // Send request
   const handleRequest = async (donationId) => {
@@ -42,7 +44,7 @@ const BenRequest = () => {
 
     // Ask beneficiary for quantity & notes
     const quantity = prompt("Enter quantity you need:");
-    if (!quantity || isNaN(quantity) || quantity <= 0) {
+    if (!quantity || isNaN(quantity) || Number(quantity) <= 0) {
       toast.error("Please enter a valid quantity.");
       return;
     }
@@ -52,17 +54,19 @@ const BenRequest = () => {
     try {
       toast.info("Sending request...");
       await axios.post(
-        "https://burnix-website.onrender.com/requests",
-        { donation: donationId, quantity, notes }, // ✅ matches backend schema
+        "https://burnix-website.onrender.com/api/requests", // ✅ corrected endpoint
+        { donation: donationId, quantity: Number(quantity), notes },
         authHeader
       );
 
+      setRequestedIds((prev) => [...prev, donationId]);
       toast.dismiss();
       toast.success("Request sent successfully!");
-      setRequestedIds((prev) => [...prev, donationId]);
     } catch (error) {
       toast.dismiss();
-      toast.error(error.response?.data?.error || "Failed to send request");
+      toast.error(
+        error.response?.data?.message || "Failed to send request"
+      );
     }
   };
 
@@ -76,7 +80,8 @@ const BenRequest = () => {
 
       {donations.length === 0 ? (
         <div className="alert alert-warning text-center">
-          <i className="bi bi-exclamation-circle me-2"></i>No donations available right now.
+          <i className="bi bi-exclamation-circle me-2"></i>
+          No donations available right now.
         </div>
       ) : (
         <div className="row g-3">
@@ -98,12 +103,13 @@ const BenRequest = () => {
                     <i className="bi bi-image text-muted fs-1"></i>
                   </div>
                 )}
+
                 <div className="card-body">
                   <h5 className="card-title text-success fw-bold">
                     {donation.type}
                   </h5>
                   <p className="card-text small text-muted">
-                    {donation.description}
+                    {donation.description || "No description available"}
                   </p>
                   <p className="mb-1">
                     <i className="bi bi-box-seam me-2 text-primary"></i>
@@ -111,7 +117,7 @@ const BenRequest = () => {
                   </p>
                   <p className="mb-1">
                     <i className="bi bi-person-fill me-2 text-secondary"></i>
-                    Donor: {donation.donor?.name}
+                    Donor: {donation.donor?.name || "Unknown"}
                   </p>
                   <span
                     className={`badge ${
@@ -120,9 +126,10 @@ const BenRequest = () => {
                         : "bg-secondary"
                     }`}
                   >
-                    {donation.status}
+                    {donation.status?.toUpperCase()}
                   </span>
                 </div>
+
                 <div className="card-footer bg-white border-top-0 d-flex justify-content-end">
                   <button
                     className="btn btn-sm btn-outline-primary"

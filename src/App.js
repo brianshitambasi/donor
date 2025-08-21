@@ -48,6 +48,7 @@ import BenLayout from './components/Beneficiary/BenLayout';
 import MyDonation from './components/donor/MyDonation';
 import AddDonation from './components/donor/AddDonation';
 import BenRequest from './components/Beneficiary/BenRequest';
+import Donations from './components/Beneficiary/Donations';
 
 function App() {
   return (
@@ -114,22 +115,11 @@ function App() {
           >
             <Route index element={<BenDashboard />} />
             {/* Add more beneficiary routes here if needed */}
+            <Route path="donations" element={<Donations />} />
             
           </Route>
 
-          <Route
-            path="/beneficiary-dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['beneficiary']}>
-
-                
-                <VolunteerLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<VolunteerDashboard />} />
-            {/* Add more volunteer routes here if needed */}
-          </Route>
+      
 
 
           {/* Volunteer Protected Routes */}

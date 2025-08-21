@@ -1,39 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import NavBar from '../NavBar';
+import React, { useEffect, useState, useContext } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AuthContext } from "../../context/AuthContext";
 
 const BenDashboard = () => {
-  const [donations, setDonations] 
-  = useState([]);
-
-  const [loading, setLoading] = useState('Loading your donations...');
+  const [stats, setStats] = useState(null);
   const [showRequestForm, setShowRequestForm] = useState(false);
-  const [request, setRequest] = useState({
-    item: '',
-    quantity: '',
-    notes: ''
-  });
-  const [requestMessage, setRequestMessage] = useState('');
+  const [request, setRequest] = useState({ item: "", quantity: "", notes: "" });
+  const { token } = useContext(AuthContext);
 
 
-  const fetchDonations = async () => {
+  const authHeader = { headers: { Authorization: `Bearer ${token}` } };
+
+  const fetchDashboard = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('https://burnix-website.onrender.com/api/donations/assigned-to-me', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setDonations(res.data);
-      setLoading('');
+      // console.log("token",token)
+      toast.info("Loading beneficiary dashboard...");
+      const res = await axios.get(
+        "https://burnix-website.onrender.com/api/beneficiaries/dash",
+        authHeader
+      );
+      setStats(res.data.stats);
+      toast.dismiss();
     } catch (err) {
-      console.error(err);
-      setLoading('');
+      toast.dismiss();
+      toast.error(
+        err.response?.data?.message || "Failed to load beneficiary dashboard"
+      );
     }
   };
 
   useEffect(() => {
-    fetchDonations();
+    fetchDashboard();
   }, []);
 
   const handleRequestChange = (e) => {
@@ -43,103 +42,143 @@ const BenDashboard = () => {
 
   const handleRequestSubmit = async (e) => {
     e.preventDefault();
-    setRequestMessage('Sending request...');
+    toast.info("Submitting request...");
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('https://burnix-website.onrender.com/api/beneficiary-requests', request, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setRequestMessage('Request submitted successfully!');
-      setRequest({ item: '', quantity: '', notes: '' });
+      await axios.post(
+        "https://burnix-website.onrender.com/api/beneficiary-requests",
+        request,
+        authHeader
+      );
+      toast.dismiss();
+      toast.success("Request submitted successfully!");
+      setRequest({ item: "", quantity: "", notes: "" });
+      fetchDashboard(); // refresh stats after request
     } catch (err) {
-      console.error(err);
-      setRequestMessage('Failed to submit request.');
+      toast.dismiss();
+      toast.error(err.response?.data?.message || "Failed to submit request");
     }
   };
 
+  if (!stats)
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100 text-muted">
+        <ToastContainer position="top-right" autoClose={3000} />
+        <div className="spinner-border text-primary me-2" role="status"></div>
+        Loading dashboard...
+      </div>
+    );
+
   return (
-    <div
-      className="min-vh-100 py-5"
-      style={{
-        background: 'linear-gradient(to right, #e6f0ff, #ffffff)',
-        paddingBottom: '3rem',
-      }}
-    >
-      <div className="container">
-        <h2 className='text-center mb-4 text-primary fw-bold'>Beneficiary Dashboard</h2>
+    <div className="container py-4">
+      <ToastContainer position="top-right" autoClose={3000} />
 
-        {loading && <div className='alert alert-info'>{loading}</div>}
+      {/* Breadcrumb */}
+      <nav aria-label="breadcrumb" className="mb-4">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item fw-bold">Dashboard</li>
+          <li className="breadcrumb-item active" aria-current="page">
+            Beneficiary
+          </li>
+        </ol>
+      </nav>
 
-        <div className='text-center mb-4'>
-          <button className='btn btn-outline-primary' onClick={() => setShowRequestForm(!showRequestForm)}>
-            {showRequestForm ? 'Hide Request Form' : 'Request New Item'}
-          </button>
+      {/* Stats Cards */}
+      <div className="row g-4 mb-4">
+        <div className="col-md-3">
+          <div className="card shadow-sm border-0 h-100 bg-light">
+            <div className="card-body text-center">
+              <i className="bi bi-journal-text display-6 text-warning"></i>
+              <h6 className="mt-2 text-muted">Total Requests</h6>
+              <p className="fs-3 fw-bold text-warning">{stats.totalRequests}</p>
+            </div>
+          </div>
         </div>
 
-        {showRequestForm && (
-          <div className='card p-4 mb-4 shadow-sm'>
-            <h4 className='mb-3'>Request an Item</h4>
-            <form onSubmit={handleRequestSubmit}>
-              <div className='mb-3'>
-                <label>Item Name</label>
-                <input
-                  type='text'
-                  className='form-control'
-                  name='item'
-                  value={request.item}
-                  onChange={handleRequestChange}
-                  required
-                />
-              </div>
-              <div className='mb-3'>
-                <label>Quantity</label>
-                <input
-                  type='number'
-                  className='form-control'
-                  name='quantity'
-                  value={request.quantity}
-                  onChange={handleRequestChange}
-                  required
-                />
-              </div>
-              <div className='mb-3'>
-                <label>Additional Notes</label>
-                <textarea
-                  className='form-control'
-                  name='notes'
-                  value={request.notes}
-                  onChange={handleRequestChange}
-                  rows='3'
-                />
-              </div>
-              <button type='submit' className='btn btn-success'>Submit Request</button>
-              {requestMessage && <div className='mt-3 alert alert-info'>{requestMessage}</div>}
-            </form>
-          </div>
-        )}
-
-        {/* Assigned Donations */}
-        <div className='row'>
-          {donations.map((donation) => (
-            <div className='col-md-6 mb-4' key={donation._id}>
-              <div className='card shadow-sm border-left-primary'>
-                <div className='card-body'>
-                  <h5 className='card-title text-primary'>Donation: {donation.type}</h5>
-                  <p><strong>Quantity:</strong> {donation.quantity}</p>
-                  {donation.description && <p><strong>Description:</strong> {donation.description}</p>}
-                  <p><strong>Status:</strong> 
-                    <span className={`badge ms-2 bg-${donation.status === 'delivered' ? 'success' : donation.status === 'reserved' ? 'warning' : 'secondary'}`}>
-                      {donation.status.toUpperCase()}
-                    </span>
-                  </p>
-                  <small className='text-muted'>Assigned on: {new Date(donation.updatedAt).toLocaleDateString()}</small>
-                </div>
-              </div>
+        <div className="col-md-3">
+          <div className="card shadow-sm border-0 h-100 bg-light">
+            <div className="card-body text-center">
+              <i className="bi bi-hourglass-split display-6 text-secondary"></i>
+              <h6 className="mt-2 text-muted">Pending Requests</h6>
+              <p className="fs-3 fw-bold text-secondary">{stats.pendingRequests}</p>
             </div>
-          ))}
+          </div>
+        </div>
+
+        <div className="col-md-3">
+          <div className="card shadow-sm border-0 h-100 bg-light">
+            <div className="card-body text-center">
+              <i className="bi bi-gift-fill display-6 text-primary"></i>
+              <h6 className="mt-2 text-muted">Assigned Donations</h6>
+              <p className="fs-3 fw-bold text-primary">{stats.assignedDonations}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-3">
+          <div className="card shadow-sm border-0 h-100 bg-light">
+            <div className="card-body text-center">
+              <i className="bi bi-check2-circle display-6 text-success"></i>
+              <h6 className="mt-2 text-muted">Completed Donations</h6>
+              <p className="fs-3 fw-bold text-success">{stats.completedDonations}</p>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Request Form Toggle */}
+      <div className="text-center mb-4">
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => setShowRequestForm(!showRequestForm)}
+        >
+          {showRequestForm ? "Hide Request Form" : "Request New Item"}
+        </button>
+      </div>
+
+      {/* Request Form */}
+      {showRequestForm && (
+        <div className="card p-4 mb-4 shadow-sm">
+          <h4 className="mb-3">Request an Item</h4>
+          <form onSubmit={handleRequestSubmit}>
+            <div className="mb-3">
+              <label>Item Name</label>
+              <input
+                type="text"
+                className="form-control"
+                name="item"
+                value={request.item}
+                onChange={handleRequestChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label>Quantity</label>
+              <input
+                type="number"
+                className="form-control"
+                name="quantity"
+                value={request.quantity}
+                onChange={handleRequestChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label>Additional Notes</label>
+              <textarea
+                className="form-control"
+                name="notes"
+                value={request.notes}
+                onChange={handleRequestChange}
+                rows="3"
+              />
+            </div>
+            <button type="submit" className="btn btn-success">
+              Submit Request
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

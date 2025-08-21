@@ -1,38 +1,20 @@
 // src/components/Beneficiary/BenLayout.jsx
-import React from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import DashboardNavbar from "../DashboardNavbar"; // 👈 reuse the same navbar
+import SideBar from "./sideBar";
 
 const BenLayout = () => {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    alert('Logged out successfully');
-    navigate('/login');
-  };
-
   return (
-    <div className="container-fluid">
-      <div className="row min-vh-100">
-        <nav className="col-md-3 col-lg-2 bg-success text-white p-3">
-          <h3 className="mb-4">Beneficiary Panel</h3>
-          <ul className="nav flex-column">
-            <li className="nav-item mb-2">
-              <Link to="/Beneficiary-dashboard" className="nav-link text-white">
-                Dashboard
-              </Link>
-            </li>
-            <li className="nav-item mt-4">
-              <button
-                className="btn btn-outline-light w-100"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </li>
-          </ul>
-        </nav>
-        <main className="col-md-9 col-lg-10 p-4 bg-light">
+    <div className="d-flex" style={{ backgroundColor: "#D0DEF2" }}>
+      {/* Sidebar */}
+      <SideBar />
+
+      {/* Main Content */}
+      <div className="flex-grow-1">
+        <DashboardNavbar />
+        <main className="p-4 vh-100">
+          {/* Renders the matched child route's element */}
           <Outlet />
         </main>
       </div>
