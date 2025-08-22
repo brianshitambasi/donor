@@ -49,6 +49,7 @@ import MyDonation from './components/donor/MyDonation';
 import AddDonation from './components/donor/AddDonation';
 import BenRequest from './components/Beneficiary/BenRequest';
 import Donations from './components/Beneficiary/Donations';
+import DonorRequests from './components/donor/DonorRequest';
 
 function App() {
   return (
@@ -85,6 +86,7 @@ function App() {
             <Route path="donor/edit/:id" element={<DonorEdit />} />
             <Route path="volunteers" element={<Volunteers />} />
             <Route path="volunteer/add" element={<VolunteerAdd />} />
+            <Route path="donor/request" element={<DonorRequests />} />
             <Route path="volunteer/edit/:id" element={<VolunteerEdit />} />
             <Route path="request" element={<Request />} />
           </Route>
@@ -116,6 +118,7 @@ function App() {
             <Route index element={<BenDashboard />} />
             {/* Add more beneficiary routes here if needed */}
             <Route path="donations" element={<Donations />} />
+            <Route path="my-request" element={<BenRequest />} />
             
           </Route>
 

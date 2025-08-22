@@ -33,7 +33,7 @@ const SideBar = () => {
             </li>
             <li className='nav-item mb-3'>
                 <NavLink 
-                    to='/beneficiary-dashboard/ben-request' 
+                    to='/beneficiary-dashboard/my-request' 
                     end 
                     className={({isActive})=> isActive? 'nav-link bg-success text-light fw-bold':'nav-link text-light'}>
 

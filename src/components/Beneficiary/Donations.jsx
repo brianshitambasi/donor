@@ -27,19 +27,23 @@ const Donations = () => {
   const makeRequest = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:3002/api/requests/${selectedDonation._id}`,
-        { quantity, notes },
+        `https://burnix-website.onrender.com/requests/${selectedDonation._id}`,  // ✅ add ID in URL
+        { quantity, notes }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      if (res.data.request) {
+        
+        console.log(res.data)
+        toast.success(res.data.message);
+        setSelectedDonation(null);
+        setQuantity(1);
+        setNotes("");
+        fetchDonations();
+      }
+      toast.error(res.data.message);
 
-      toast.success("Request created successfully!");
-      setSelectedDonation(null);
-      setQuantity(1);
-      setNotes("");
-      fetchDonations();
     } catch (err) {
-        console.log("error",err)
-      console.error(err);
+      console.log("error", err);
       toast.error(err.response?.data?.error || "Failed to make request");
     }
   };

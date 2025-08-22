@@ -21,6 +21,7 @@ const MyDonations = () => {
         "https://burnix-website.onrender.com/donation",
         authHeader
       );
+      console.log(res.data)
       setDonations(res.data);
       toast.dismiss();
     } catch (error) {

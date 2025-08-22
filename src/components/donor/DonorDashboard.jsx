@@ -19,6 +19,7 @@ const DonorDashboard = () => {
         "https://burnix-website.onrender.com/donor/dash",
         authHeader
       );
+      console.log(res.data)
       setStats(res.data.stats);
       toast.dismiss();
     } catch (error) {
@@ -58,7 +59,7 @@ const DonorDashboard = () => {
 
       {/* Stats Cards */}
       <div className="row g-4">
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="card shadow-sm border-0 h-100 bg-light">
             <div className="card-body text-center">
               <i className="bi bi-box-seam display-6 text-primary"></i>
@@ -70,7 +71,7 @@ const DonorDashboard = () => {
           </div>
         </div>
 
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="card shadow-sm border-0 h-100 bg-light">
             <div className="card-body text-center">
               <i className="bi bi-bag-check-fill display-6 text-success"></i>
@@ -82,7 +83,7 @@ const DonorDashboard = () => {
           </div>
         </div>
 
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="card shadow-sm border-0 h-100 bg-light">
             <div className="card-body text-center">
               <i className="bi bi-person-lines-fill display-6 text-warning"></i>
@@ -94,19 +95,9 @@ const DonorDashboard = () => {
           </div>
         </div>
 
-        <div className="col-md-6">
-          <div className="card shadow-sm border-0 h-100 bg-light">
-            <div className="card-body text-center">
-              <i className="bi bi-check-circle-fill display-6 text-info"></i>
-              <h6 className="mt-2 text-muted">Completed Donations</h6>
-              <p className="fs-3 fw-bold text-info">
-                {stats.completedDonations}
-              </p>
-            </div>
-          </div>
-        </div>
+       
 
-        <div className="col-md-6">
+        <div className="col-md-3">
           <div className="card shadow-sm border-0 h-100 bg-muted">
             <div className="card-body text-center">
               <i className="bi bi-journal-text display-6 text-secondary"></i>
