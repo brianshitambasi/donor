@@ -47,6 +47,7 @@ import BenRequest from './components/Beneficiary/BenRequest';
 import Donations from './components/Beneficiary/Donations';
 import DonorRequests from './components/donor/DonorRequest';
 
+
 function App() {
   return (
     <Router>
@@ -112,6 +113,21 @@ function App() {
             <Route path="donations" element={<Donations />} />
             <Route path="my-request" element={<BenRequest />} />
             
+          </Route>
+
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+
+                
+                <BenLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            {/* Add more beneficiary routes here if needed */}
+          
           </Route>
 
       

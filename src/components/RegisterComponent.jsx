@@ -72,6 +72,8 @@ const RegisterComponent = () => {
                     <option value="donor">Donor</option>
                     <option value="volunteer">Volunteer</option>
                     <option value="beneficiary">Beneficiary</option>
+                    <option value="admin">Admin</option>
+
                 </select>
           
             <div className="d-grid mb-3">

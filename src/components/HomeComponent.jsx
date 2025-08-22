@@ -39,9 +39,7 @@ const HomeComponent = () => {
             Your generous donation helps transform lives and communities.
             Join us in creating lasting impact by supporting causes that matter.
           </p>
-          <Link to="/donate" className="btn btn-lg btn-danger px-5 py-3">
-            Donate Now
-          </Link>
+       <Link className="nav-link btn btn-primary text-white ms-3 px-3 py-1 rounded" to="/login"> Donate Now</Link>
         </div>
       </section>
 

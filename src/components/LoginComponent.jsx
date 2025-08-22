@@ -37,6 +37,10 @@ const LoginComponent = () => {
           navigate('/donor-dashboard')
         }else if(res.data.user.role==='volunteer'){
           navigate('/volunteer-dashboard')
+        }else if(res.data.user.role==='admin'){
+          navigate('/admin-dashboard')
+
+
         }else{
           navigate('/')
         }
