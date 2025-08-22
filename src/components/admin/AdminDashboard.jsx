@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState(null);
+  const [dashboard, setDashboard] = useState(null);
   const { token } = useContext(AuthContext);
 
   const authHeader = { headers: { Authorization: `Bearer ${token}` } };
@@ -15,14 +15,14 @@ const AdminDashboard = () => {
     try {
       toast.info("Loading admin dashboard...");
       const res = await axios.get(
-        "https://burnix-website.onrender.com/api/admin",
+        "https://burnix-website.onrender.com/api/admin/dashboard",
         authHeader
       );
-      setStats(res.data);
+      setDashboard(res.data);
       toast.dismiss();
     } catch (err) {
       toast.dismiss();
-      toast.error(err.response?.data?.message || "Failed to load admin stats");
+      toast.error(err.response?.data?.error || "Failed to load admin stats");
     }
   };
 
@@ -38,7 +38,7 @@ const AdminDashboard = () => {
     return isNaN(date) ? "" : date.toLocaleDateString();
   };
 
-  if (!stats)
+  if (!dashboard)
     return (
       <div className="d-flex justify-content-center align-items-center vh-100 text-muted">
         <ToastContainer position="top-right" autoClose={3000} />
@@ -46,6 +46,8 @@ const AdminDashboard = () => {
         Loading dashboard...
       </div>
     );
+
+  const { stats, recent } = dashboard;
 
   return (
     <div className="container py-4">
@@ -69,7 +71,7 @@ const AdminDashboard = () => {
               <i className="bi bi-cash-stack display-6 text-success"></i>
               <h6 className="mt-2 text-muted">Total Donations</h6>
               <p className="fs-3 fw-bold text-success">
-                ksh {formatNumber(stats.totalDonations)}
+                {formatNumber(stats.totalDonations)}
               </p>
             </div>
           </div>
@@ -88,9 +90,9 @@ const AdminDashboard = () => {
         <div className="col-md-3">
           <div className="card shadow-sm border-0 h-100 bg-light">
             <div className="card-body text-center">
-              <i className="bi bi-megaphone display-6 text-warning"></i>
-              <h6 className="mt-2 text-muted">Active Campaigns</h6>
-              <p className="fs-3 fw-bold text-warning">{stats.totalCampaigns}</p>
+              <i className="bi bi-person-check-fill display-6 text-warning"></i>
+              <h6 className="mt-2 text-muted">Active Users</h6>
+              <p className="fs-3 fw-bold text-warning">{stats.activeUsers}</p>
             </div>
           </div>
         </div>
@@ -98,10 +100,10 @@ const AdminDashboard = () => {
         <div className="col-md-3">
           <div className="card shadow-sm border-0 h-100 bg-light">
             <div className="card-body text-center">
-              <i className="bi bi-calendar-check display-6 text-primary"></i>
-              <h6 className="mt-2 text-muted">This Month</h6>
+              <i className="bi bi-hand-thumbs-up-fill display-6 text-primary"></i>
+              <h6 className="mt-2 text-muted">Total Requests</h6>
               <p className="fs-3 fw-bold text-primary">
-                ksh {formatNumber(stats.monthlyAmount)}
+                {formatNumber(stats.totalRequests)}
               </p>
             </div>
           </div>
@@ -116,7 +118,7 @@ const AdminDashboard = () => {
           </h5>
         </div>
         <div className="card-body">
-          {stats.recentDonations?.length === 0 ? (
+          {recent.donations?.length === 0 ? (
             <p className="text-muted">No recent donations.</p>
           ) : (
             <div className="table-responsive">
@@ -124,30 +126,14 @@ const AdminDashboard = () => {
                 <thead>
                   <tr>
                     <th>Donor</th>
-                    <th>Amount</th>
-                    <th>Campaign</th>
                     <th>Date</th>
-                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {stats.recentDonations?.map((donation, i) => (
+                  {recent.donations?.map((donation, i) => (
                     <tr key={i}>
-                      <td>{donation.donorName || "Anonymous"}</td>
-                      <td>ksh {formatNumber(donation.amount)}</td>
-                      <td>{donation.campaign || "-"}</td>
-                      <td>{formatDate(donation.date)}</td>
-                      <td>
-                        <span
-                          className={`badge bg-${
-                            donation.status === "Completed"
-                              ? "success"
-                              : "warning"
-                          }`}
-                        >
-                          {donation.status}
-                        </span>
-                      </td>
+                      <td>{donation.donor?.name || "Anonymous"}</td>
+                      <td>{formatDate(donation.createdAt)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -157,36 +143,44 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Top Donors */}
+      {/* Recent Requests */}
       <div className="card shadow-sm">
         <div className="card-header bg-info text-white">
           <h5 className="mb-0">
-            <i className="bi bi-trophy-fill me-2"></i> Top Donors
+            <i className="bi bi-list-check me-2"></i> Recent Requests
           </h5>
         </div>
         <div className="card-body">
-          {stats.topDonors?.length === 0 ? (
-            <p className="text-muted">No donor data available.</p>
+          {recent.requests?.length === 0 ? (
+            <p className="text-muted">No requests yet.</p>
           ) : (
             <div className="table-responsive">
               <table className="table table-hover">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Donor</th>
-                    <th>Total Donated</th>
-                    <th>Last Donation</th>
-                    <th>Donations Count</th>
+                    <th>Beneficiary</th>
+                    <th>Donation</th>
+                    <th>Status</th>
+                    <th>Date</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {stats.topDonors?.map((donor, i) => (
+                  {recent.requests?.map((req, i) => (
                     <tr key={i}>
-                      <td>{i + 1}</td>
-                      <td>{donor.name}</td>
-                      <td>ksh {formatNumber(donor.totalAmount)}</td>
-                      <td>{formatDate(donor.lastDonation)}</td>
-                      <td>{donor.donationCount ?? 0}</td>
+                      <td>{req.beneficiary?.name}</td>
+                      <td>{req.donation?.type}</td>
+                      <td>
+                        <span
+                          className={`badge bg-${
+                            req.donation?.status === "completed"
+                              ? "success"
+                              : "warning"
+                          }`}
+                        >
+                          {req.donation?.status}
+                        </span>
+                      </td>
+                      <td>{formatDate(req.createdAt)}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const SideBar = () => {
+const Sidebar = () => {
   return (
     <div
       className="d-flex flex-column p-3 vh-100 shadow"
@@ -37,7 +37,6 @@ const SideBar = () => {
         <li className="nav-item mb-2">
           <NavLink
             to="/admin-dashboard/donors"
-            end
             className={({ isActive }) =>
               isActive
                 ? "nav-link bg-success text-light fw-bold rounded"
@@ -50,22 +49,7 @@ const SideBar = () => {
 
         <li className="nav-item mb-2">
           <NavLink
-            to="/admin-dashboard/volunteers"
-            end
-            className={({ isActive }) =>
-              isActive
-                ? "nav-link bg-success text-light fw-bold rounded"
-                : "nav-link text-light"
-            }
-          >
-            <i className="bi bi-people-fill me-2"></i> Volunteers
-          </NavLink>
-        </li>
-
-        <li className="nav-item mb-2">
-          <NavLink
             to="/admin-dashboard/requests"
-            end
             className={({ isActive }) =>
               isActive
                 ? "nav-link bg-success text-light fw-bold rounded"
@@ -79,7 +63,6 @@ const SideBar = () => {
         <li className="nav-item mb-2">
           <NavLink
             to="/admin-dashboard/donations"
-            end
             className={({ isActive }) =>
               isActive
                 ? "nav-link bg-success text-light fw-bold rounded"
@@ -103,4 +86,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default Sidebar;

@@ -39,7 +39,7 @@ const HomeComponent = () => {
             Your generous donation helps transform lives and communities.
             Join us in creating lasting impact by supporting causes that matter.
           </p>
-       <Link className="nav-link btn btn-primary text-white ms-3 px-3 py-1 rounded" to="/login"> Donate Now</Link>
+            <Link className="btn btn-lg btn-danger px-5 py-3" to="/login"> Donate Now</Link>
         </div>
       </section>
 
@@ -51,7 +51,7 @@ const HomeComponent = () => {
               <i className="bi bi-heart-fill text-danger fs-1 mb-3"></i>
               <h3>Why Donate?</h3>
               <p>
-                Donations empower us to provide food, shelter, education, and medical aid to those in need.
+                Donations empower us to provide food, shelter, education, and medical aid to those in need .
               </p>
             </div>
           </div>

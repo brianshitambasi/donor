@@ -3,12 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Button } from '@mui/material';
-import { AccessAlarm } from '@mui/icons-material';
-import { createTheme } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
-
-
 
 // Context
 import { AuthProvider } from './context/AuthContext';
@@ -25,28 +19,26 @@ import NotFound from './components/NotFound';
 // Admin
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminLayout from './components/admin/AdminLayout';
-import Volunteers from './components/admin/Volunteers';
-import Donor from './components/admin/Donor';
-import Request from './components/admin/Request';
-
+import Donors from './components/admin/Donors';
+import Donations from './components/admin/Donations';
+import Requests from './components/admin/Requests';
 
 // Donor
 import DonorDashboard from './components/donor/DonorDashboard';
 import DonorLayout from './components/donor/DonorLayout';
-
-// Volunteer
-import VolunteerDashboard from './components/volunteer/VolunteerDashboard';
-import VolunteerLayout from './components/volunteer/VolunteerLayout';
+import MyDonation from './components/donor/MyDonation';
+import AddDonation from './components/donor/AddDonation';
+import DonorRequests from './components/donor/DonorRequest';
 
 // Beneficiary
 import BenDashboard from './components/Beneficiary/BenDashboard';
 import BenLayout from './components/Beneficiary/BenLayout';
-import MyDonation from './components/donor/MyDonation';
-import AddDonation from './components/donor/AddDonation';
 import BenRequest from './components/Beneficiary/BenRequest';
-import Donations from './components/Beneficiary/Donations';
-import DonorRequests from './components/donor/DonorRequest';
+import DonationsBeneficiary from './components/Beneficiary/Donations';
 
+// Volunteer
+import VolunteerDashboard from './components/volunteer/VolunteerDashboard';
+import VolunteerLayout from './components/volunteer/VolunteerLayout';
 
 function App() {
   return (
@@ -54,7 +46,7 @@ function App() {
       <AuthProvider>
         <Routes>
 
-          {/* Public Routes */}
+          {/* 🌍 Public Routes */}
           <Route path="/" element={<HomeComponent />} />
           <Route path="/about" element={<AboutComponent />} />
           <Route path="/login" element={<LoginComponent />} />
@@ -62,7 +54,7 @@ function App() {
           <Route path="/not-authorized" element={<NotAuthorized />} />
           <Route path="/not-found" element={<NotFound />} />
 
-          {/* Donor  Protected Routes */}
+          {/* 👤 Donor Protected Routes */}
           <Route
             path="/donor-dashboard"
             element={
@@ -72,68 +64,41 @@ function App() {
             }
           >
             <Route index element={<DonorDashboard />} />
-
             <Route path="my-donation" element={<MyDonation />} />
-            <Route path="request" element={<BenRequest />} />
-
-
             <Route path="add-donation" element={<AddDonation />} />
-            <Route path="donors" element={<Donor />} />
-            <Route path="volunteers" element={<Volunteers />} />
-            <Route path="donor/request" element={<DonorRequests />} />
-            <Route path="request" element={<Request />} />
+            <Route path="requests" element={<DonorRequests />} />
           </Route>
 
-          {/* Donor Protected Routes */}
-          {/* <Route
-            path="/donor-dashboard"
-            element={
-              <ProtectedRoute allowedRoles={['donor']}>
-                <DonorLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<DonorDashboard />} />
-            {/* Add more donor routes here if needed *
-          </Route> */}
-
-          {/* Benefeciary Protected Routes */}
+          {/* 🎯 Beneficiary Protected Routes */}
           <Route
             path="/beneficiary-dashboard"
             element={
               <ProtectedRoute allowedRoles={['beneficiary']}>
-
-                
                 <BenLayout />
               </ProtectedRoute>
             }
           >
             <Route index element={<BenDashboard />} />
-            {/* Add more beneficiary routes here if needed */}
-            <Route path="donations" element={<Donations />} />
+            <Route path="donations" element={<DonationsBeneficiary />} />
             <Route path="my-request" element={<BenRequest />} />
-            
           </Route>
 
+          {/* 🛠️ Admin Protected Routes */}
           <Route
             path="/admin-dashboard"
             element={
               <ProtectedRoute allowedRoles={['admin']}>
-
-                
-                <BenLayout />
+                <AdminLayout />
               </ProtectedRoute>
             }
           >
             <Route index element={<AdminDashboard />} />
-            {/* Add more beneficiary routes here if needed */}
-          
+            <Route path="donors" element={<Donors />} />
+            <Route path="donations" element={<Donations />} />
+            <Route path="requests" element={<Requests />} />
           </Route>
 
-      
-
-
-          {/* Volunteer Protected Routes */}
+          {/* 🤝 Volunteer Protected Routes */}
           <Route
             path="/volunteer-dashboard"
             element={
@@ -143,12 +108,11 @@ function App() {
             }
           >
             <Route index element={<VolunteerDashboard />} />
-            {/* Add more volunteer routes here if needed */}
           </Route>
 
-          {/* Catch-all for undefined routes */}
+          {/* ❌ Catch-all for undefined routes */}
           <Route path="*" element={<NotFound />} />
-          
+
         </Routes>
       </AuthProvider>
     </Router>
