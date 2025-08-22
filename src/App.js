@@ -26,11 +26,7 @@ import NotFound from './components/NotFound';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminLayout from './components/admin/AdminLayout';
 import Volunteers from './components/admin/Volunteers';
-import VolunteerEdit from './components/admin/forms/VolunteerEdit';
-import VolunteerAdd from './components/admin/forms/VolunteerAdd';
 import Donor from './components/admin/Donor';
-import DonorAdd from './components/admin/forms/DonorAdd';
-import DonorEdit from './components/admin/forms/DonorEdit';
 import Request from './components/admin/Request';
 
 
@@ -82,12 +78,8 @@ function App() {
 
             <Route path="add-donation" element={<AddDonation />} />
             <Route path="donors" element={<Donor />} />
-            <Route path="donor/add" element={<DonorAdd />} />
-            <Route path="donor/edit/:id" element={<DonorEdit />} />
             <Route path="volunteers" element={<Volunteers />} />
-            <Route path="volunteer/add" element={<VolunteerAdd />} />
             <Route path="donor/request" element={<DonorRequests />} />
-            <Route path="volunteer/edit/:id" element={<VolunteerEdit />} />
             <Route path="request" element={<Request />} />
           </Route>
 
