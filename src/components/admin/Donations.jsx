@@ -1,81 +1,67 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../context/AuthContext";
 
-const Donations = () => {
-  const [donations, setDonations] = useState([]);
+const Requests = () => {
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token } = useContext(AuthContext);
 
-  const authHeader = { headers: { Authorization: `Bearer ${token}` } };
+  const fetchRequests = async () => {
+    try {
+      const res = await axios.get("https://burnix-website.onrender.com/requests", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("Requests:", res.data);
+      setRequests(res.data); // since API returns an array
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching requests:", err);
+      toast.error("Failed to load requests");
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDonations = async () => {
-      try {
-        const res = await axios.get(
-          "https://burnix-website.onrender.com/api/admin/donations",
-          authHeader
-        );
-        setDonations(res.data || []);
-      } catch (err) {
-        console.error("Failed to fetch donations:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDonations();
+    fetchRequests();
   }, []);
 
-  if (loading)
-    return (
-      <div className="d-flex justify-content-center align-items-center vh-100 text-muted">
-        <div className="spinner-border text-primary me-2" role="status"></div>
-        Loading donations...
-      </div>
-    );
+  if (loading) return <p>Loading requests...</p>;
 
   return (
     <div className="container py-4">
-      <h3 className="mb-4">All Donations</h3>
-      {donations.length === 0 ? (
-        <p className="text-muted">No donations available.</p>
-      ) : (
-        <div className="table-responsive">
-          <table className="table table-hover">
-            <thead>
-              <tr>
-                <th>Donor</th>
-                <th>Amount</th>
-                <th>Campaign</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {donations.map((donation, i) => (
-                <tr key={i}>
-                  <td>{donation.donor?.name || "Anonymous"}</td>
-                  <td>{donation.amount}</td>
-                  <td>{donation.campaign || "-"}</td>
-                  <td>
-                    <span
-                      className={`badge bg-${
-                        donation.status === "Completed" ? "success" : "warning"
-                      }`}
-                    >
-                      {donation.status}
-                    </span>
-                  </td>
-                  <td>{new Date(donation.createdAt).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <ToastContainer />
+      <h2 className="mb-4 fw-bold">All donations</h2>
+
+      <table className="table table-striped table-hover shadow-sm">
+        <thead className="table-dark">
+          <tr>
+            <th>Status</th>
+            <th>Beneficiary</th>
+            <th>Donation Type</th>
+            <th>Quantity</th>
+            <th>Notes</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {requests.map((req) => (
+            <tr key={req._id}>
+              <td>{req.status}</td>
+              <td>{req.beneficiary ? req.beneficiary.name : "N/A"}</td>
+              <td>{req.donation ? req.donation.type : "N/A"}</td>
+              <td>{req.quantity}</td>
+              <td>{req.notes}</td>
+              <td>{new Date(req.createdAt).toLocaleDateString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default Donations;
+export default Requests;

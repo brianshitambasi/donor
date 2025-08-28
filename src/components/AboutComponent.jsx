@@ -1,12 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import NavBar from './NavBar';
 // import '../About.css'; // This file must now exist in src/
 
 const AboutComponent = () => {
+  // --- Chatbot state ---
+  const [messages, setMessages] = useState([
+    { text: "Hello! 👋 How can I help you today?", fromBot: true },
+  ]);
+  const [input, setInput] = useState("");
+
+  const handleSendMessage = () => {
+    if (!input.trim()) return;
+
+    // Add user message
+    const userMessage = { text: input, fromBot: false };
+    setMessages((prev) => [...prev, userMessage]);
+
+    // Simulate bot response
+    setTimeout(() => {
+      const botMessage = { text: "Thanks for your message! We'll get back to you soon. 😊", fromBot: true };
+      setMessages((prev) => [...prev, botMessage]);
+    }, 1000);
+
+    setInput("");
+  };
+
   return (
     <div className="about-page">
-         <NavBar />
+      <NavBar />
+
       {/* Hero Section */}
       <section className="about-hero bg-primary text-white py-5">
         <div className="container py-5">
@@ -16,9 +39,9 @@ const AboutComponent = () => {
               <p className="lead mb-4">
                 Empowering communities through generosity and sustainable change since 2020.
               </p>
-              <Link to="/donate" className="btn btn-light btn-lg px-4 py-2">
+              {/* <Link to="/donate" className="btn btn-light btn-lg px-4 py-2">
                 Join Our Mission
-              </Link>
+              </Link> */}
             </div>
             <div className="col-lg-6">
               <img 
@@ -183,11 +206,35 @@ const AboutComponent = () => {
           <h2 className="mb-4">Ready to Make a Difference?</h2>
           <p className="lead mb-5">Join thousands of donors who are creating meaningful change through our platform.</p>
           <div className="d-flex justify-content-center gap-3">
-            <Link to="/donate" className="btn btn-light btn-lg px-4">Donate Now</Link>
-            <Link to="/contact" className="btn btn-outline-light btn-lg px-4">Contact Us</Link>
+              <Link className="btn btn-lg btn-danger px-5 py-3" to="/login"> Donate Now</Link>
+            <Link to="/login" className="btn btn-outline-light btn-lg px-4">Contact Us</Link>
           </div>
         </div>
       </section>
+
+      {/* Chatbot Section */}
+      <div className="container my-5">
+        <h3>Chat with Us</h3>
+        <div className="chatbot-container border rounded p-3" style={{ maxWidth: "400px" }}>
+          <div className="chat-window mb-3" style={{ maxHeight: "200px", overflowY: "auto" }}>
+            {messages.map((msg, index) => (
+              <div key={index} className={msg.fromBot ? "text-start text-primary" : "text-end text-dark"}>
+                <div className="p-2 my-1 border rounded bg-light">{msg.text}</div>
+              </div>
+            ))}
+          </div>
+          <div className="d-flex">
+            <input 
+              type="text" 
+              className="form-control me-2"
+              value={input} 
+              onChange={(e) => setInput(e.target.value)} 
+              placeholder="Type a message..."
+            />
+            <button className="btn btn-primary" onClick={handleSendMessage}>Send</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

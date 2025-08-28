@@ -9,10 +9,12 @@ const DonorRequests = () => {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get("http://localhost:3002/api/donor/requests/my-requests", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log(res.data);
+      const res = await axios.get(
+        "http://localhost:3002/api/donor/requests/my-requests", // ✅ your backend for fetching requests
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setRequests(res.data);
       setLoading(false);
     } catch (err) {
@@ -24,50 +26,63 @@ const DonorRequests = () => {
   const handleAction = async (id, action) => {
     try {
       const res = await axios.put(
-        `http://localhost:3002/api/donor/requests/${id}/${action}`,
-        {},
+        `http://localhost:3002/api/requests/${id}/status`, // ✅ correct backend endpoint
+        { status: action }, // send status in body
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
-      console.log(`✅ Request ${action} successful:`, res.data);
-  
-      // Optionally show success to the user
-      alert(`Request ${action}d: ${res.data.message || "Success"}`);
-  
-      // refresh requests
-      fetchRequests();
+
+      alert(res.data.message || `Request ${action}d successfully`);
+      fetchRequests(); // refresh after action
     } catch (err) {
-      console.error(`Error while trying to ${action} request:`, err.response?.data || err.message);
+      console.error(`Error while trying to ${action} request:`, err);
       alert(`Error: Could not ${action} request`);
     }
   };
-  
 
   useEffect(() => {
     fetchRequests();
   }, []);
 
-  if (loading) return <p>Loading requests...</p>;
+  if (loading)
+    return (
+      <div className="d-flex justify-content-center align-items-center py-5">
+        <div className="spinner-border text-primary" role="status"></div>
+      </div>
+    );
 
-  if (requests.length === 0) return <p>No requests on your donations yet.</p>;
+  if (requests.length === 0)
+    return (
+      <p className="text-center text-muted">
+        No requests on your donations yet.
+      </p>
+    );
 
   return (
     <div className="container py-4">
-      <h2 className="mb-4 fw-bold text-primary">Requests on My Donations</h2>
+      <h2 className="mb-4 fw-bold text-primary text-center">
+        📦 Requests on My Donations
+      </h2>
+
       <div className="row g-4">
         {requests.map((req) => (
           <div key={req._id} className="col-md-6 col-lg-4">
             <div className="card shadow-sm border-0 h-100 rounded-3">
               <div className="card-body d-flex flex-column">
                 <h5 className="fw-bold text-success">{req.donation?.type}</h5>
-                <p className="text-muted">{req.notes}</p>
-                <p>
+                <p className="text-muted small mb-2">
+                  {req.notes || "No notes provided"}
+                </p>
+
+                <p className="mb-1">
                   <strong>Beneficiary:</strong>{" "}
                   {req.beneficiary && typeof req.beneficiary === "object"
                     ? `${req.beneficiary.name} (${req.beneficiary.email})`
                     : req.beneficiary}
                 </p>
-                <p>
+                <p className="mb-1">
+                  <strong>Quantity:</strong> {req.quantity}
+                </p>
+                <p className="mb-1">
                   <strong>Status:</strong>{" "}
                   <span
                     className={`badge ${
@@ -81,17 +96,21 @@ const DonorRequests = () => {
                     {req.status}
                   </span>
                 </p>
+                <p className="text-muted small">
+                  Created: {new Date(req.createdAt).toLocaleDateString()}
+                </p>
+
                 {req.status === "pending" && (
                   <div className="mt-3 d-flex gap-2">
                     <button
-                      className="btn btn-sm btn-success"
-                      onClick={() => handleAction(req._id, "approve")}
+                      className="btn btn-sm btn-success flex-fill"
+                      onClick={() => handleAction(req._id, "approved")} // ✅ send approved
                     >
                       Approve
                     </button>
                     <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleAction(req._id, "reject")}
+                      className="btn btn-sm btn-danger flex-fill"
+                      onClick={() => handleAction(req._id, "rejected")} // ✅ send rejected
                     >
                       Reject
                     </button>

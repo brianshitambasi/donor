@@ -126,7 +126,7 @@ const BenDashboard = () => {
         </div>
       </div>
 
-      {/* Request Form Toggle */}
+      {/* Request Form Toggle
       <div className="text-center mb-4">
         <button
           className="btn btn-outline-primary"
@@ -134,9 +134,9 @@ const BenDashboard = () => {
         >
           {showRequestForm ? "Hide Request Form" : "Request New Item"}
         </button>
-      </div>
+      </div> */}
 
-      {/* Request Form */}
+      {/* Request Form
       {showRequestForm && (
         <div className="card p-4 mb-4 shadow-sm">
           <h4 className="mb-3">Request an Item</h4>
@@ -178,7 +178,7 @@ const BenDashboard = () => {
             </button>
           </form>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

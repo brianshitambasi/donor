@@ -1,73 +1,67 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../context/AuthContext";
 
-const Donors = () => {
-  const [donors, setDonors] = useState([]);
+const Requests = () => {
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token } = useContext(AuthContext);
 
-  const authHeader = { headers: { Authorization: `Bearer ${token}` } };
+  const fetchRequests = async () => {
+    try {
+      const res = await axios.get("https://burnix-website.onrender.com/requests", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("Requests:", res.data);
+      setRequests(res.data); // since API returns an array
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching requests:", err);
+      toast.error("Failed to load requests");
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDonors = async () => {
-      try {
-        const res = await axios.get(
-          "https://burnix-website.onrender.com/api/admin/donors",
-          authHeader
-        );
-        setDonors(res.data || []);
-      } catch (err) {
-        console.error("Failed to fetch donors:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDonors();
+    fetchRequests();
   }, []);
 
-  if (loading)
-    return (
-      <div className="d-flex justify-content-center align-items-center vh-100 text-muted">
-        <div className="spinner-border text-primary me-2" role="status"></div>
-        Loading donors...
-      </div>
-    );
+  if (loading) return <p>Loading requests...</p>;
 
   return (
     <div className="container py-4">
-      <h3 className="mb-4">All Donors</h3>
-      {donors.length === 0 ? (
-        <p className="text-muted">No donors available.</p>
-      ) : (
-        <div className="table-responsive">
-          <table className="table table-hover">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Total Donated</th>
-                <th>Last Donation</th>
-              </tr>
-            </thead>
-            <tbody>
-              {donors.map((donor, i) => (
-                <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{donor.name}</td>
-                  <td>{donor.email}</td>
-                  <td>{donor.totalAmount}</td>
-                  <td>{new Date(donor.lastDonation).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <ToastContainer />
+      <h2 className="mb-4 fw-bold">All Donors</h2>
+
+      <table className="table table-striped table-hover shadow-sm">
+        <thead className="table-dark">
+          <tr>
+            <th>Status</th>
+            <th>Beneficiary</th>
+            <th>Donation Type</th>
+            <th>Quantity</th>
+            <th>Notes</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {requests.map((req) => (
+            <tr key={req._id}>
+              <td>{req.status}</td>
+              <td>{req.beneficiary ? req.beneficiary.name : "N/A"}</td>
+              <td>{req.donation ? req.donation.type : "N/A"}</td>
+              <td>{req.quantity}</td>
+              <td>{req.notes}</td>
+              <td>{new Date(req.createdAt).toLocaleDateString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default Donors;
+export default Requests;

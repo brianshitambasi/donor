@@ -76,12 +76,7 @@ const Sidebar = () => {
 
       <hr className="text-light mt-auto" />
 
-      {/* Logout Button */}
-      <div className="text-center">
-        <button className="btn btn-outline-light w-100">
-          <i className="bi bi-box-arrow-right me-2"></i> Logout
-        </button>
-      </div>
+    
     </div>
   );
 };

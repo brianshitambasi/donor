@@ -80,7 +80,7 @@ function App() {
           >
             <Route index element={<BenDashboard />} />
             <Route path="donations" element={<DonationsBeneficiary />} />
-            <Route path="my-request" element={<BenRequest />} />
+            <Route path="my-request" element={<BenRequest />} /> {/* ✅ fixed */}
           </Route>
 
           {/* 🛠️ Admin Protected Routes */}

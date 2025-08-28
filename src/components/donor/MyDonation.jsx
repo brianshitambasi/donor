@@ -16,17 +16,31 @@ const MyDonations = () => {
 
   const fetchDonations = async () => {
     try {
-      toast.info("Loading your donations...");
       const res = await axios.get(
         "https://burnix-website.onrender.com/donation",
         authHeader
       );
-      console.log(res.data)
       setDonations(res.data);
-      toast.dismiss();
     } catch (error) {
-      toast.dismiss();
       toast.error(error.response?.data?.message || "Failed to load donations");
+    }
+  };
+
+  // ✅ DELETE Donation
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this donation?")) return;
+
+    try {
+      const res = await axios.delete(
+        `https://burnix-website.onrender.com/donation/${id}`,
+        authHeader
+      );
+      toast.success(res.data.message || "Donation deleted successfully");
+
+      // refresh after delete
+      setDonations(donations.filter((don) => don._id !== id));
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete donation");
     }
   };
 
@@ -102,7 +116,11 @@ const MyDonations = () => {
                   </span>
                 </div>
                 <div className="card-footer bg-white border-top-0 d-flex justify-content-end">
-                  <button className="btn btn-sm btn-outline-danger">
+                  {/* ✅ Call delete function */}
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => handleDelete(donation._id)}
+                  >
                     <i className="bi bi-trash me-1"></i> Delete
                   </button>
                 </div>
